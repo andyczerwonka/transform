@@ -1,10 +1,19 @@
 package model
 
 object Transformer {
-  
-  def transform(me: List[String], ts: Int): List[String] = {
-    val header = me.head.split(",")
-    header foreach println
+
+  val df = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+  def transform(me: List[Array[String]], ts: Int): List[Array[String]] = {
+
+    me.foreach(row => {
+      println("")
+      row.foreach(c => {
+        print(c)
+        print(", ")
+      })
+    })
+
     me
   }
 
