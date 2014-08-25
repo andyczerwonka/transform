@@ -18,7 +18,7 @@ class TransformerSpec extends Specification {
     val fileResource = getClass.getResource("/me.txt")
     val in = new BufferedReader(new InputStreamReader(fileResource.openStream()));
     val reader = new CSVReader(in)
-    val me = reader.readAll().asScala.toList
+    val me = reader.readAll().asScala.toSeq
     reader.close()
 
     "display file" in {

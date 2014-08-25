@@ -11,7 +11,7 @@ object Transform extends App {
   new FileReader(args(0))
   
   val reader = new CSVReader(new FileReader(args(0)))
-  val me = reader.readAll().asScala.toList
+  val me = reader.readAll().asScala.toSeq
   reader.close()
 
   val count = Integer.parseInt(args(1))
