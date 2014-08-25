@@ -1,8 +1,12 @@
+import com.github.retronym.SbtOneJar._
+
 name := "Measure Export Transformer"
 
 version := "1.0"
 
 scalaVersion := "2.11.2"
+
+oneJarSettings
 
 libraryDependencies ++= Seq(
   "net.sf.opencsv" % "opencsv" % "2.3",
