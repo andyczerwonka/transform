@@ -47,15 +47,15 @@ object Transformer {
   }
 
   def buildHeader(row: (List[(String, String)], ListBuffer[(String, String)])) = {
-    val left = row._1.map('"' + _._1 + '"')
-    val right = row._2.map(_._1)
+    val left = row._1.map('"' + _._1.trim + '"')
+    val right = row._2.map(_._1.trim)
     left ++ right
   }
 
   def buildData(res: scala.collection.mutable.HashMap[List[(String, String)], ListBuffer[(String, String)]]) = {
     res.map {
       case (k, v) => {
-        val left = k.map('"' + _._2 + '"')
+        val left = k.map('"' + _._2.replace("\"", "").trim + '"')
         val right = v.map(n => if (n._2.toDouble != 0.0d) n._2 else "")
         left ++ right
       }
