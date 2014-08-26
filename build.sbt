@@ -1,6 +1,6 @@
 import com.github.retronym.SbtOneJar._
 
-name := "Measure Export Transformer"
+name := "met"
 
 version := "1.0"
 
