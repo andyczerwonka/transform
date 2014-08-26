@@ -22,8 +22,8 @@ class TransformerSpec extends Specification {
     reader.close()
 
     "display file" in {
-      Transformer.transform(me, 2)
-      1 mustEqual 1
+      val data = Transformer.transform(me.take(10), 2)
+      data.length mustEqual 3
     }
 
   }

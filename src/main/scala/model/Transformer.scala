@@ -4,9 +4,7 @@ import scala.collection.mutable.ListBuffer
 
 object Transformer {
 
-  val df = new java.text.SimpleDateFormat("yyyy-MM-dd")
-
-  def transform(me: Seq[Array[String]], ts: Int): Seq[Array[String]] = {
+  def transform(me: Seq[Array[String]], ts: Int): Seq[Seq[String]] = {
 
     val rawHeader = me.head
     val dateIndex = rawHeader.length - ts - 1
@@ -33,8 +31,9 @@ object Transformer {
 
     })
 
-    res.foreach(println)
-    me
+    val header = buildHeader(res.iterator.next)
+    val data = buildData(res)
+    header :: data
   }
 
   private def extractExtras(valueColumn: String) = {
@@ -47,6 +46,24 @@ object Transformer {
 
   def extractProperties(rawHeader: Array[String], row: Array[String]) = {
     for (i <- 0 until 2) yield rawHeader(i) -> row(i)
+  }
+
+  def buildHeader(row: (List[(String, String)], ListBuffer[(String, String)])) = {
+    val left = row._1.map(p => '"' + p._1 + '"')
+    val right = row._2.map(p => p._1)
+    left ++ right
+  }
+
+  def buildData(res: scala.collection.mutable.HashMap[List[(String, String)], ListBuffer[(String, String)]]) = {
+    res.map {
+      case (k, v) => {
+        val left = k.map(p => '"' + p._2 + '"')
+        val right = v.map(n => {
+          if (n._2.toDouble != 0.0d) n._2 else ""
+        })
+        left ++ right
+      }
+    }.toList
   }
 
 }
