@@ -14,10 +14,10 @@ object Transformer {
 
       val xs = for {
         i <- rawHeader.length - ts until rawHeader.length
-        val properties = extractProperties(rawHeader, row)
-        val extras = extractExtras(rawHeader(i))
-        val date = row(dateIndex)
-        val value = row(i)
+        properties = extractProperties(rawHeader.take(dateIndex), row)
+        extras = extractExtras(rawHeader(i))
+        date = row(dateIndex)
+        value = row(i)
       } yield (properties ++ extras).toList -> (date, value)
 
       xs.foreach {
@@ -31,9 +31,7 @@ object Transformer {
 
     })
 
-    val header = buildHeader(res.iterator.next)
-    val data = buildData(res)
-    header :: data
+    buildHeader(res.iterator.next) :: buildData(res)
   }
 
   private def extractExtras(valueColumn: String) = {
@@ -45,22 +43,20 @@ object Transformer {
   }
 
   def extractProperties(rawHeader: Array[String], row: Array[String]) = {
-    for (i <- 0 until 2) yield rawHeader(i) -> row(i)
+    for (i <- rawHeader.indices) yield rawHeader(i) -> row(i)
   }
 
   def buildHeader(row: (List[(String, String)], ListBuffer[(String, String)])) = {
-    val left = row._1.map(p => '"' + p._1 + '"')
-    val right = row._2.map(p => p._1)
+    val left = row._1.map('"' + _._1 + '"')
+    val right = row._2.map(_._1)
     left ++ right
   }
 
   def buildData(res: scala.collection.mutable.HashMap[List[(String, String)], ListBuffer[(String, String)]]) = {
     res.map {
       case (k, v) => {
-        val left = k.map(p => '"' + p._2 + '"')
-        val right = v.map(n => {
-          if (n._2.toDouble != 0.0d) n._2 else ""
-        })
+        val left = k.map('"' + _._2 + '"')
+        val right = v.map(n => if (n._2.toDouble != 0.0d) n._2 else "")
         left ++ right
       }
     }.toList
