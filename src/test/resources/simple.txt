@@ -1,0 +1,3 @@
+"Project","Capital Type","Date","Measure:POB|Version:Forecast|Variant:Gross|Product:CEA POB","Measure:Capex|Version:Forecast|Variant:Gross|Unit:USD","Measure:Capex|Version:Forecast|Variant:Net|Unit:USD"
+"14"" PW Pipeline Commissioning","","2013-01-01","0.0","0.0","0.0"
+"14"" PW Pipeline Commissioning","","2013-02-01","0.0","0.0","0.0"

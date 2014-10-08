@@ -8,8 +8,7 @@ object Transform extends App {
   val me = reader.readAll().asScala.toSeq
   reader.close()
 
-  val count = Integer.parseInt(args(1))
-  var csv = model.Transformer.transform(me, count)
+  var csv = model.Met.transform(me)
   csv.foreach(l => println(l.mkString(",")))
 
 }
