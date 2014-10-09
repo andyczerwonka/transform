@@ -38,6 +38,7 @@ object Met {
     val encodedColumns = me.head.splitAt(me.head.indexOf("Date"))._2.tail
     val encocdedHeaders = encodedColumns.map(parseEncodedColumn(_))
 
+    // expand the encoded column names
     val expanded = me.tail.flatMap(mer => {
       val (fixed, withDate) = mer.splitAt(dateIndex)
       withDate.tail.zipWithIndex.map {
@@ -48,33 +49,32 @@ object Met {
       }
     })
 
-    val res = scala.collection.mutable.HashMap.empty[IndexedSeq[String], ListBuffer[String]]
+    // transpose so that all values per unique set of attributes
+    val transposed = scala.collection.mutable.HashMap.empty[IndexedSeq[String], ListBuffer[String]]
     expanded.foreach {
       case (k, v) => {
-        res.get(k) match {
+        transposed.get(k) match {
           case Some(buffer) => buffer += v
-          case None => res += k -> ListBuffer(v)
+          case None => transposed += k -> ListBuffer(v)
         }
       }
     }
 
-    val filtered = res.filter {
-      case (k, v) => v.exists(_ != "0.0")
-    }
+    // filter out the zero's
+    val filtered = transposed.filter { case (k, v) => v.exists(_ != "0.0") }
 
+    // figure out the periodicity and emit the dates
     val (from, to) = {
       val ymd = DateTimeFormat.forPattern("yyyy-MM-dd")
       val dates = me.tail.take(2).map(_(dateIndex)).map(ymd.parseLocalDate(_))
       (dates(0), dates(1))
     }
     val dates = perdiodicity(from, to).generate(from, filtered.head._2.size)
+
+    // emit the answer
     val header = fixedKeys ++ encodedKeys ++ dates
-    val data = filtered.map {
-      case (attributes, values) => attributes.toSeq ++ values.toSeq
-    }
-
+    val data = filtered.map { case (attributes, values) => attributes.toSeq ++ values.toSeq }
     header.toSeq +: data.toSeq
-
   }
 
   def perdiodicity(from: LocalDate, to: LocalDate) = Days.daysBetween(from, to).getDays() match {
