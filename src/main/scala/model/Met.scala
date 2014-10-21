@@ -60,16 +60,16 @@ object Met {
       }
     }
 
-    // filter out the zero's
-    val filtered = transposed.filter { case (k, v) => v.exists(_ != "0.0") }
-
     // figure out the periodicity and emit the dates
     val (from, to) = {
       val ymd = DateTimeFormat.forPattern("yyyy-MM-dd")
       val dates = me.tail.take(2).map(_(dateIndex)).map(ymd.parseLocalDate(_))
       (dates(0), dates(1))
     }
-    val dates = perdiodicity(from, to).generate(from, filtered.head._2.size)
+    val dates = perdiodicity(from, to).generate(from, transposed.head._2.size)
+
+    // filter out the zero's
+    val filtered = transposed.filter { case (k, v) => v.exists(_ != "0.0") }
 
     // emit the answer
     val header = fixedKeys ++ encodedKeys ++ dates
