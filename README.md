@@ -25,14 +25,8 @@ The above file asks for two columns. Within the column names we encode desired a
 ### Running the Utility
 Download `met_2.11-1.0-one-jar.jar` from the `dist` folder. Once you have run a measure export, take the output file run the transformation.
 ```
-java -jar met_2.11-1.0-one-jar.jar measureexportresults.csv
+java -jar met_2.11-1.0-one-jar.jar <measureexportresults.csv> <number of periods>
 ```
-
-The above will output to `stdout`, so when you want to generate a `.csv` file, simply pipe the results to a file.
-```
-java -jar met_2.11-1.0-one-jar.jar measureexportresults.csv > esi.portfolio.csv
-```
-
 ### Assumptions
 * Header is present, after all, that's where we get the metadata :)
 

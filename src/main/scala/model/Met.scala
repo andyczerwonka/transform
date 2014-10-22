@@ -31,11 +31,11 @@ object Met {
     }
   }
 
-  def transform(me: MeasureExport): Seq[Seq[String]] = {
+  def transform(header: Header, me: MeasureExport): Seq[Seq[String]] = {
 
-    val dateIndex = me.head.indexWhere(_ == "Date")
-    val (fixedKeys, encodedKeys) = extractAttributes(me.head)
-    val encodedColumns = me.head.splitAt(me.head.indexOf("Date"))._2.tail
+    val dateIndex = header.indexWhere(_ == "Date")
+    val (fixedKeys, encodedKeys) = extractAttributes(header)
+    val encodedColumns = header.splitAt(header.indexOf("Date"))._2.tail
     val encocdedHeaders = encodedColumns.map(parseEncodedColumn(_))
 
     // expand the encoded column names
@@ -55,7 +55,7 @@ object Met {
       case (k, v) => {
         transposed.get(k) match {
           case Some(buffer) => buffer += v
-          case None => transposed += k -> ListBuffer(v)
+          case None         => transposed += k -> ListBuffer(v)
         }
       }
     }
@@ -72,15 +72,20 @@ object Met {
     val filtered = transposed.filter { case (k, v) => v.exists(_ != "0.0") }
 
     // emit the answer
-    val header = fixedKeys ++ encodedKeys ++ dates
     val data = filtered.map { case (attributes, values) => attributes.toSeq ++ values.toSeq }
-    header.toSeq +: data.toSeq
+    data.toSeq
+  }
+
+  def createHeader(csv: Array[String], start: LocalDate, end: LocalDate, periods: Int): Array[String] = {
+    val (fixedKeys, encodedKeys) = extractAttributes(csv)
+    val dates = perdiodicity(start, end).generate(start, periods)
+    fixedKeys ++ encodedKeys ++ dates
   }
 
   def perdiodicity(from: LocalDate, to: LocalDate) = Days.daysBetween(from, to).getDays() match {
-    case 1 => Daily
+    case 1                     => Daily
     case x if x > 1 && x <= 31 => Monthly
-    case _ => Yearly
+    case _                     => Yearly
   }
 
   def extractAttributes(header: Header) = {
