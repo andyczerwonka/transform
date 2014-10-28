@@ -26,6 +26,14 @@ class MetSpec extends Specification {
       attributes._1.length === 2
     }
 
+    "return all values" in {
+      val result = Met.transform(me.head, me.tail)
+      val (x, y, z) = result(0).takeRight(3) match { case Seq(a, b, c) => (a, b, c) }
+      x === "1.0"
+      y === "2.0"
+      z === "3.0"
+    }
+
   }
 
 }

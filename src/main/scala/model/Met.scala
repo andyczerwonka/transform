@@ -39,7 +39,7 @@ object Met {
     val encocdedHeaders = encodedColumns.map(parseEncodedColumn(_))
 
     // expand the encoded column names
-    val expanded = me.tail.flatMap(mer => {
+    val expanded = me.flatMap(mer => {
       val (fixed, withDate) = mer.splitAt(dateIndex)
       withDate.tail.zipWithIndex.map {
         case (value, i) => {
